@@ -38,11 +38,11 @@ func HttpServer() {
 		Addr:         ":8080",
 		ReadTimeout:  5 * time.Minute, // 5 min to allow for delays when 'curl' on OSx prompts for username/password
 		WriteTimeout: 10 * time.Second,
-		TLSConfig:    getTLSConfig("localhost", "ca.pem", tls.ClientAuthType(tls.RequireAndVerifyClientCert)),
+		TLSConfig:    getTLSConfig("localhost", "cert/ca.pem", tls.ClientAuthType(tls.RequireAndVerifyClientCert)),
 	}
 
 	http2.ConfigureServer(server, &http2.Server{})
-	if err := server.ListenAndServeTLS("server.pem", "server.key"); err != nil {
+	if err := server.ListenAndServeTLS("cert/server.pem", "cert/server.key"); err != nil {
 		log.Fatal(err)
 	}
 
@@ -73,9 +73,9 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello"))
 }
 func HttpClient() {
-	clientCertFile := "client.pem"
-	clientKeyFile := "client.key"
-	caCertFile := "ca.pem"
+	clientCertFile := "cert/client.pem"
+	clientKeyFile := "cert/client.key"
+	caCertFile := "cert/ca.pem"
 	var cert tls.Certificate
 	var err error
 	if clientCertFile != "" && clientKeyFile != "" {
